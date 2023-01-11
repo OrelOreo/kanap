@@ -8,7 +8,7 @@ function genererProducts(data, id) {
 for (let i = 0; i < data.length; i++) {
     const product = data[i]
     // Récupération des ID de chaque produits
-    const idProduct = product._id[i]
+    const idProduct = product._id
     // Récupération de l'élément du DOM qui accueillera les produits
     const sectionArticles = document.querySelector('.items')
     // Création d'une balise link dédié à un produit
