@@ -47,3 +47,22 @@ function genererColorsProduct(colors) {
         selectElements.appendChild(option)
     })
 }
+
+// Add-To-Cart Event
+
+const addToCart = document.querySelector('#addToCart')
+
+addToCart.addEventListener('click', (event) => {
+    const selectColor = document.querySelector('#colors').value
+    const inputQuantity = document.querySelector('#quantity').value
+
+    // Récupération de l'ID du produit, la value de la couleur & la value de quantity. On les stock dans un objet
+    const storage = {
+        id: idProduct,
+        selectColor: selectColor,
+        inputQuantity: inputQuantity
+    }
+    // localStorage ne peut pas stocker les objets, donc nous le transformons en string
+    localStorage.setItem(idProduct, JSON.stringify(storage))
+    window.location.replace("cart.html")
+})
