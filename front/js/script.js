@@ -2,7 +2,7 @@ fetch("http://localhost:3000/api/products")
     .then((response) => response.json())
     .then((data) => genererProducts(data))
 
-function genererProducts(data, id) {
+function genererProducts(data) {
 // Rattachement des éléments
 
 for (let i = 0; i < data.length; i++) {
@@ -21,11 +21,12 @@ for (let i = 0; i < data.length; i++) {
     // On crée le nom
     const nomElement = document.createElement('h3')
     nomElement.innerText = product.name
-    // On crée le prix
+    // On crée la description
     const descriptionElement = document.createElement('p')
     descriptionElement.innerText = product.description
     // On accède à l'index de la liste pour configurer la source de l'image
     imageElement.src = data[i].imageUrl
+    imageElement.alt = data[i].altTxt
 
 
     sectionArticles.appendChild(linkElement)
