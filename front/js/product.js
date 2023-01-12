@@ -52,7 +52,7 @@ function genererColorsProduct(colors) {
 
 const addToCart = document.querySelector('#addToCart')
 
-addToCart.addEventListener('click', (event) => {
+addToCart.addEventListener('click', async function (event) {
     const selectColor = document.querySelector('#colors').value
     const inputQuantity = document.querySelector('#quantity').value
 
@@ -73,5 +73,5 @@ addToCart.addEventListener('click', (event) => {
     // localStorage ne peut pas stocker les objets, donc nous le transformons en string
     localStorage.setItem(idProduct, JSON.stringify(storage))
     window.location.replace("cart.html")
-    }
+}
 })
