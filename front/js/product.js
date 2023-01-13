@@ -50,28 +50,28 @@ function genererColorsProduct(colors) {
 
 // Add-To-Cart Event
 
-const addToCart = document.querySelector('#addToCart')
+const addToCartButton = document.querySelector('#addToCart')
 
-addToCart.addEventListener('click', async function (event) {
+
+addToCartButton.addEventListener('click',  function (event) {
     const selectColor = document.querySelector('#colors').value
     const inputQuantity = document.querySelector('#quantity').value
+    saveStorage(selectColor,inputQuantity)
+})
 
-    if (selectColor === "" || inputQuantity === "0")  {
-        // A voir avec le mentor si j'dois continuer sur la condition pour afficher un message d'erreur
-        const buttonContent = document.querySelector('.item__content__addButton')
-        const textError = document.createElement('p')
-        textError.innerText = "Veuillez choisir une couleur ou sélectionner le nombre d'articles"
-        textError.style.marginTop = "-30px"
-        buttonContent.appendChild(textError)
-    } else {
-        // Récupération de l'ID du produit, la value de la couleur & la value de quantity. On les stock dans un objet
-        const storage = {
+function saveStorage(selectColor, inputQuantity) {
+    var storage = {
         id: idProduct,
         selectColor: selectColor,
-        inputQuantity: inputQuantity
+        inputQuantity: Number (inputQuantity)
     }
-    // localStorage ne peut pas stocker les objets, donc nous le transformons en string
-    localStorage.setItem(idProduct, JSON.stringify(storage))
-    window.location.replace("cart.html")
+    conditionnalStorage(selectColor, inputQuantity, storage)
 }
-})
+function conditionnalStorage(selectColor, inputQuantity, storage) {
+    if (selectColor === "" || inputQuantity == 0) {
+        alert("Veuillez choisir une couleur et séléctionner le nombre d'articles")
+    } else {
+        localStorage.setItem(idProduct, JSON.stringify(storage))
+    }
+}    
+    

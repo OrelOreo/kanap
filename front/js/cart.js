@@ -1,35 +1,45 @@
-const stockage = Object.values(localStorage)
-console.log(stockage)
+// Récupération du localStorage
+const storage = localStorage.length
+// Création du tableau qui va contenir les produits ajoutés
+const panier = []
+// Pour chaque produit (objet) dans localStorage on récupère sa key (id)
+// storage - 1 parce que dans un tableau l'index commence à 0
+for (let i = 0; i <= storage - 1; i++) {
+    // Transformation de la String en Objet
+    const product = JSON.parse(localStorage.getItem(localStorage.key(i)))
+    // Ajout du produit au tableau "panier"
+    panier.push(product)
+    const {article, blocImage, image} = product
+    createArticle(article)
+    createBlocImage(blocImage)
+    createImage(image)
+}
 
 
+// ⚠️⚠️⚠️ Trouver un meilleur moyen pour récupérer des élements parents qui ont été créer dans une fonction précédente ⚠️⚠️⚠️
 
+// Créer un élement article pour chaque objet poussé dans le panier
+function createArticle(article) {
+    const sectionDesArticles = document.querySelector('#cart__items')
+    const articleElement = document.createElement('article')
+    articleElement.classList = "cart__item"
+    // Ajouter data-id et data-color par la suite ..
+    sectionDesArticles.appendChild(articleElement)
+}
 
+// Créer un élément div pour ajouter l'image correspondante au produit
+function createBlocImage(articleElement) {
+    // ⚠️⚠️⚠️ recupArticle
+    const recupArticle = document.querySelector('.cart__item')
+    const blocImageElement = document.createElement('div')
+    blocImageElement.classList = "cart__item__img"
+    recupArticle.appendChild(blocImageElement)
+}
 
-
-
-
-const sectionItems = document.querySelector('#cart__items')
-const article = document.createElement('article')
-const cartItemImage = document.createElement('div')
-const image = document.createElement('img')
-const cartItemContent = document.createElement('div')
-const cartItemContentDescription = document.createElement('div')
-
-cartItemContentDescription.classList = "cart__item__content__description"
-
-cartItemContent.classList = "cart__item__content"
-image.src = "../../back/images/kanap01.jpeg"
-image.alt = "testoto"
-cartItemImage.classList = 'cart__item__img'
-article.classList = 'cart__item'
-article.setAttribute('data-id', "ontest")
-article.setAttribute('data-color', "ontesttt")
-
-
-
-
-cartItemContent.appendChild(cartItemContentDescription)
-cartItemImage.appendChild(image)
-sectionItems.appendChild(article)
-article.appendChild(cartItemImage)
-article.appendChild(cartItemContent)
+function createImage(image) {
+    // ⚠️⚠️⚠️ recupBlocImage
+    const recupBlocImage = document.querySelector('.cart__item__img')
+    const imageElement = document.createElement('img')
+    // Ajouter src & alt à l'image par la suite..
+    recupBlocImage.appendChild(imageElement)
+}
