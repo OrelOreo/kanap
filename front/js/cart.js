@@ -1,45 +1,117 @@
-// Récupération du localStorage
-const storage = localStorage.length
-// Création du tableau qui va contenir les produits ajoutés
+const storage = localStorage
+
 const panier = []
-// Pour chaque produit (objet) dans localStorage on récupère sa key (id)
-// storage - 1 parce que dans un tableau l'index commence à 0
-for (let i = 0; i <= storage - 1; i++) {
-    // Transformation de la String en Objet
+
+const sectionCartItems = document.querySelector('#cart__items')
+// ⚠️⚠️⚠️ Besoin d'un refactor ⬇️
+for (let i = 0; i <= storage.length - 1; i++) {
     const product = JSON.parse(localStorage.getItem(localStorage.key(i)))
-    // Ajout du produit au tableau "panier"
-    panier.push(product)
-    const {article, blocImage, image} = product
+    const article = product
+    const cartItemImage = product
+    const imageElement = product
+    const cartItemContent = product
+    const contentDescription = product
+    const description = product
+    const cartContentSettings = product
+    const cartContentSettingsQuantity = product
+    const cartContentSettingsDelete = product
     createArticle(article)
-    createBlocImage(blocImage)
-    createImage(image)
+    createCartItemImage(cartItemImage)
+    createImageElement(imageElement)
+    createCartItemContent(cartItemContent)
+    createContentDescription(contentDescription)
+    createDescription(description)
+    createCartContentSettings(cartContentSettings)
+    createCartContentSettingsQuantity(cartContentSettingsQuantity)
+    createCartContentSettingsDelete(cartContentSettingsDelete)
+    panier.push(product)
+   
 }
 
 
-// ⚠️⚠️⚠️ Trouver un meilleur moyen pour récupérer des élements parents qui ont été créer dans une fonction précédente ⚠️⚠️⚠️
-
-// Créer un élement article pour chaque objet poussé dans le panier
 function createArticle(article) {
-    const sectionDesArticles = document.querySelector('#cart__items')
     const articleElement = document.createElement('article')
     articleElement.classList = "cart__item"
-    // Ajouter data-id et data-color par la suite ..
-    sectionDesArticles.appendChild(articleElement)
+    articleElement.setAttribute("data-id", `${article.id}`)
+    articleElement.setAttribute("data-color", `${article.selectColor}`)
+    sectionCartItems.appendChild(articleElement)
 }
 
-// Créer un élément div pour ajouter l'image correspondante au produit
-function createBlocImage(articleElement) {
-    // ⚠️⚠️⚠️ recupArticle
+
+function createCartItemImage(cartItemImage) {
     const recupArticle = document.querySelector('.cart__item')
-    const blocImageElement = document.createElement('div')
-    blocImageElement.classList = "cart__item__img"
-    recupArticle.appendChild(blocImageElement)
+    const cartImage = document.createElement('div')
+    cartImage.classList = "cart__item__img"
+    recupArticle.appendChild(cartImage)
+}
+// Ajouter l'image dynamiquement avec l'API
+function createImageElement(imageElement) {
+    const recupCartImage = document.querySelector('.cart__item__img')
+    const image = document.createElement('img')
+    image.src = "../../back/images/kanap01.jpeg"
+    image.alt = "toto"
+    recupCartImage.appendChild(image)
 }
 
-function createImage(image) {
-    // ⚠️⚠️⚠️ recupBlocImage
-    const recupBlocImage = document.querySelector('.cart__item__img')
-    const imageElement = document.createElement('img')
-    // Ajouter src & alt à l'image par la suite..
-    recupBlocImage.appendChild(imageElement)
+function createCartItemContent(cartItemContent) {
+    const recupArticle = document.querySelector('.cart__item')
+    const cartContent = document.createElement('div')
+    cartContent.classList = "cart__item__content"
+    recupArticle.appendChild(cartContent)
 }
+
+function createContentDescription(contentDescription) {
+    const recupCartContent = document.querySelector('.cart__item__content')
+    const blocDescription = document.createElement('div')
+    blocDescription.classList = "cart__item__content__description"
+    recupCartContent.appendChild(blocDescription)
+}
+
+function createDescription(description) {
+    const productName = document.createElement('h2')
+    productName.innerText = "toto"
+    const color = document.createElement('p')
+    color.innerText = `${description.selectColor}`
+    const price = document.createElement('p')
+    price.innerText = "44, 00 $"
+    const recupBlocDescription = document.querySelector('.cart__item__content__description')
+    recupBlocDescription.append(productName, color, price)
+}
+
+function createCartContentSettings(cartContentSettings) {
+    const recupArticle = document.querySelector('.cart__item')
+    const cartItemSettings = document.createElement('div')
+    cartItemSettings.classList = "cart__item__content__settings"
+    recupArticle.appendChild(cartItemSettings)
+}
+
+// ⚠️⚠️⚠️ Besoin d'un refactor ⬇️
+function createCartContentSettingsQuantity(cartContentSettingsQuantity) {
+    const recupCartContentSettings = document.querySelector('.cart__item__content__settings')
+    const contentSettingsQuantity = document.createElement('div')
+    contentSettingsQuantity.classList = "cart__item__content_settings__quantity"
+    const quantity = document.createElement('p')
+    quantity.innerText = "Qté : "
+    const input = document.createElement('input')
+    input.setAttribute("type", "number")
+    input.setAttribute("name", "itemQuantity")
+    input.setAttribute("min", "1")
+    input.setAttribute("max", "100")
+    input.setAttribute("value", `${cartContentSettingsQuantity.inputQuantity}`)
+    input.classList = "itemQuantity"
+    contentSettingsQuantity.append(quantity, input)
+    recupCartContentSettings.appendChild(contentSettingsQuantity)
+}
+
+function createCartContentSettingsDelete(cartContentSettingsDelete) {
+    const recupcartItemSettings = document.querySelector('.cart__item__content__settings')
+    const contentSettingsDelete = document.createElement('div')
+    contentSettingsDelete.classList = "cart__item__content__settings__delete"
+    const deleteElement = document.createElement('p')
+    deleteElement.classList = "deleteItem"
+    deleteElement.innerText = "Supprimer"
+    contentSettingsDelete.appendChild(deleteElement)
+    recupcartItemSettings.appendChild(contentSettingsDelete)    
+}
+
+console.log(panier)
