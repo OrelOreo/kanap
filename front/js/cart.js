@@ -1,32 +1,36 @@
 const storage = localStorage
 
-// fetch("http://localhost:3000/api/products")
-//     .then((response) => response.json())
-//     .then((data) => console.log(data))
+fetch("http://localhost:3000/api/products")
+    .then((response) => response.json())
+    .then((data) => generateProducts(data))
 
-async function getProductPriceById(artId) {
-     fetch("http://localhost:3000/api/products/")
-        .then((response) => response.json()) 
-        .then((data) => {
-            for (let i = 0; i< data.length; i++)
-            {                         
-                if (data[i]._id == artId)
-                {                
-                  console.log(data[i].price)
-                  return data[i].price;
+async function generateProducts(products) {
+    for (let i = 0; i < products.length; i++) {
+        const prod = products[i]
+        const prodId = prod._id
+        const name = prod.name
+        const price = await getProductById(products[i]._id)
+        const imageUrl = prod.imageUrl
+        const altTxt = prod.altTxt
+        // console.log(name)
+        // console.log(price)
+        // console.log(imageUrl, altTxt)
+        async function getProductById(artId) {
+            for (let i = 0; i < products.length; i++) {
+                if (prodId[i] == artId) {
+                    generatePrice(price)
+                    return prodId[i]
                 }
-            }          
-        });
-  }
-    
+            }
+        }
+    }
+}
 let panier = []
 
 const sectionCartItems = document.querySelector('#cart__items')
 // ⚠️⚠️⚠️ Besoin d'un refactor ⬇️
 
 for (let i = 0; i <= storage.length - 1; i++) {
-    let priceProduct = await getProductPriceById(localStorage.key(i));
-    console.log(priceProduct)
     const product = JSON.parse(localStorage.getItem(localStorage.key(i)))
     const article = product
     const cartItemImage = product
@@ -42,14 +46,13 @@ for (let i = 0; i <= storage.length - 1; i++) {
     createImageElement(imageElement)
     createCartItemContent(cartItemContent)
     createContentDescription(contentDescription)
-    createDescription(description, priceProduct)
+    createDescription(description)
     createCartContentSettings(cartContentSettings)
     createCartContentSettingsQuantity(cartContentSettingsQuantity)
     createCartContentSettingsDelete(cartContentSettingsDelete)
     panier.push(product)
    
 }
-
 
 
 function createArticle(article) {
@@ -91,13 +94,20 @@ function createContentDescription(contentDescription) {
     recupCartContent.appendChild(blocDescription)
 }
 
-function createDescription(description, priceProduct) {
+function generatePrice(price) {
+    let priceElement = document.createElement('p')
+    priceElement.innerText = price
+    console.log(priceElement)
+}
+
+function createDescription(description, price) {
     const productName = document.createElement('h2')
     productName.innerText = "toto"
     const color = document.createElement('p')
     color.innerText = `${description.selectColor}`
-    const price = document.createElement('p')
-    price.innerText = priceProduct
+    // const price = document.createElement('p')
+    // price.innerHTML = "40e"
+    generatePrice(price)
     const recupBlocDescription = document.querySelector('.cart__item__content__description')
     recupBlocDescription.append(productName, color, price)
 }
@@ -109,7 +119,6 @@ function createCartContentSettings(cartContentSettings) {
     recupArticle.appendChild(cartItemSettings)
 }
 
-// ⚠️⚠️⚠️ Besoin d'un refactor ⬇️
 function createCartContentSettingsQuantity(cartContentSettingsQuantity) {
     const recupCartContentSettings = document.querySelector('.cart__item__content__settings')
     const contentSettingsQuantity = document.createElement('div')
@@ -138,5 +147,4 @@ function createCartContentSettingsDelete(cartContentSettingsDelete) {
     recupcartItemSettings.appendChild(contentSettingsDelete)    
 }
 
-// console.log(panier)
 
