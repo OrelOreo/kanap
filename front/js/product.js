@@ -6,6 +6,7 @@ const urlParams = new URLSearchParams(paramsString)
 // La méthode get() de URLSearchParams retourne la première valeur associé au param donné
 const idProduct = urlParams.get('id')
 
+
 fetch(`http://localhost:3000/api/products/${idProduct}`)
     .then(response => response.json())
     .then((data) => genererProduct(data))
@@ -63,15 +64,15 @@ function saveStorage(selectColor, inputQuantity) {
     var storage = {
         id: idProduct,
         selectColor: selectColor,
-        inputQuantity: Number (inputQuantity)
+        inputQuantity: Number (inputQuantity),
     }
     conditionnalStorage(selectColor, inputQuantity, storage)
 }
 function conditionnalStorage(selectColor, inputQuantity, storage) {
     if (selectColor === "" || inputQuantity == 0) {
         alert("Veuillez choisir une couleur et séléctionner le nombre d'articles")
-    } 
+    }
     else {
-        localStorage.setItem(idProduct, JSON.stringify(storage))
+        localStorage.setItem('Products', JSON.stringify(storage))
     }
 }    

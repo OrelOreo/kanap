@@ -1,10 +1,32 @@
 const storage = localStorage
 
-const panier = []
+// fetch("http://localhost:3000/api/products")
+//     .then((response) => response.json())
+//     .then((data) => console.log(data))
+
+async function getProductPriceById(artId) {
+     fetch("http://localhost:3000/api/products/")
+        .then((response) => response.json()) 
+        .then((data) => {
+            for (let i = 0; i< data.length; i++)
+            {                         
+                if (data[i]._id == artId)
+                {                
+                  console.log(data[i].price)
+                  return data[i].price;
+                }
+            }          
+        });
+  }
+    
+let panier = []
 
 const sectionCartItems = document.querySelector('#cart__items')
 // ⚠️⚠️⚠️ Besoin d'un refactor ⬇️
+
 for (let i = 0; i <= storage.length - 1; i++) {
+    let priceProduct = await getProductPriceById(localStorage.key(i));
+    console.log(priceProduct)
     const product = JSON.parse(localStorage.getItem(localStorage.key(i)))
     const article = product
     const cartItemImage = product
@@ -20,13 +42,14 @@ for (let i = 0; i <= storage.length - 1; i++) {
     createImageElement(imageElement)
     createCartItemContent(cartItemContent)
     createContentDescription(contentDescription)
-    createDescription(description)
+    createDescription(description, priceProduct)
     createCartContentSettings(cartContentSettings)
     createCartContentSettingsQuantity(cartContentSettingsQuantity)
     createCartContentSettingsDelete(cartContentSettingsDelete)
     panier.push(product)
    
 }
+
 
 
 function createArticle(article) {
@@ -37,14 +60,15 @@ function createArticle(article) {
     sectionCartItems.appendChild(articleElement)
 }
 
-
 function createCartItemImage(cartItemImage) {
     const recupArticle = document.querySelector('.cart__item')
     const cartImage = document.createElement('div')
     cartImage.classList = "cart__item__img"
     recupArticle.appendChild(cartImage)
 }
-// Ajouter l'image dynamiquement avec l'API
+
+
+
 function createImageElement(imageElement) {
     const recupCartImage = document.querySelector('.cart__item__img')
     const image = document.createElement('img')
@@ -67,13 +91,13 @@ function createContentDescription(contentDescription) {
     recupCartContent.appendChild(blocDescription)
 }
 
-function createDescription(description) {
+function createDescription(description, priceProduct) {
     const productName = document.createElement('h2')
     productName.innerText = "toto"
     const color = document.createElement('p')
     color.innerText = `${description.selectColor}`
     const price = document.createElement('p')
-    price.innerText = "44, 00 $"
+    price.innerText = priceProduct
     const recupBlocDescription = document.querySelector('.cart__item__content__description')
     recupBlocDescription.append(productName, color, price)
 }
@@ -114,4 +138,5 @@ function createCartContentSettingsDelete(cartContentSettingsDelete) {
     recupcartItemSettings.appendChild(contentSettingsDelete)    
 }
 
-console.log(panier)
+// console.log(panier)
+
