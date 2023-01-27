@@ -1,30 +1,32 @@
 const storage = localStorage
+const articleElement = document.createElement('article')
+const cartImage = document.createElement('div')
+const cartContent = document.createElement('div')
+const blocDescription = document.createElement('div')
+const cartItemSettings = document.createElement('div')
+const priceElement = document.createElement('p')
+const productName = document.createElement('h2')
+const productImage = document.createElement('img')
 
-fetch("http://localhost:3000/api/products")
-    .then((response) => response.json())
-    .then((data) => generateProducts(data))
 
 async function generateProducts(products) {
     for (let i = 0; i < products.length; i++) {
-        const prod = products[i]
-        const prodId = prod._id
-        const name = prod.name
-        const price = await getProductById(products[i]._id)
-        const imageUrl = prod.imageUrl
-        const altTxt = prod.altTxt
-        // console.log(name)
-        // console.log(price)
-        // console.log(imageUrl, altTxt)
+        const product = await getProductById(products[i].id)
+        const priceProduct = product.price
+        const nameProduct = product.name
+        const imageProduct = product.imageUrl
+        const imageProductAltTxt = product.altTxt
+        createPriceProduct(priceProduct)
+        createNameProduct(nameProduct)
+        createImageProduct(imageProduct, imageProductAltTxt)
+        console.log(product)
         async function getProductById(artId) {
-            for (let i = 0; i < products.length; i++) {
-                if (prodId[i] == artId) {
-                    generatePrice(price)
-                    return prodId[i]
-                }
-            }
+            return fetch(`http://localhost:3000/api/products/${artId}`)
+            .then((response) => response.json())
         }
     }
 }
+generateProducts([JSON.parse(storage.Products)])
 let panier = []
 
 const sectionCartItems = document.querySelector('#cart__items')
@@ -56,71 +58,62 @@ for (let i = 0; i <= storage.length - 1; i++) {
 
 
 function createArticle(article) {
-    const articleElement = document.createElement('article')
     articleElement.classList = "cart__item"
     articleElement.setAttribute("data-id", `${article.id}`)
     articleElement.setAttribute("data-color", `${article.selectColor}`)
     sectionCartItems.appendChild(articleElement)
 }
 
-function createCartItemImage(cartItemImage) {
-    const recupArticle = document.querySelector('.cart__item')
-    const cartImage = document.createElement('div')
+function createCartItemImage() {
     cartImage.classList = "cart__item__img"
-    recupArticle.appendChild(cartImage)
+    articleElement.appendChild(cartImage)
 }
 
-
-
-function createImageElement(imageElement) {
-    const recupCartImage = document.querySelector('.cart__item__img')
-    const image = document.createElement('img')
-    image.src = "../../back/images/kanap01.jpeg"
-    image.alt = "toto"
-    recupCartImage.appendChild(image)
+function createImageProduct(imageProduct, imageProductAltTxt) {
+    productImage.src = imageProduct
+    productImage.alt = imageProductAltTxt
 }
 
-function createCartItemContent(cartItemContent) {
-    const recupArticle = document.querySelector('.cart__item')
-    const cartContent = document.createElement('div')
+function createImageElement() {
+    productImage
+    cartImage.appendChild(productImage)
+}
+
+function createCartItemContent() {
+    articleElement
+    
     cartContent.classList = "cart__item__content"
-    recupArticle.appendChild(cartContent)
+    articleElement.appendChild(cartContent)
 }
 
-function createContentDescription(contentDescription) {
-    const recupCartContent = document.querySelector('.cart__item__content')
-    const blocDescription = document.createElement('div')
+function createContentDescription() {
+    cartContent
     blocDescription.classList = "cart__item__content__description"
-    recupCartContent.appendChild(blocDescription)
+    cartContent.appendChild(blocDescription)
 }
 
-function generatePrice(price) {
-    let priceElement = document.createElement('p')
-    priceElement.innerText = price
-    console.log(priceElement)
+function createPriceProduct(priceProduct) {
+    priceElement.innerText = `${priceProduct} €`
 }
 
-function createDescription(description, price) {
-    const productName = document.createElement('h2')
-    productName.innerText = "toto"
+function createNameProduct(nameProduct) {
+    productName.innerText = nameProduct
+}
+
+function createDescription(description) {
+    productName
     const color = document.createElement('p')
     color.innerText = `${description.selectColor}`
-    // const price = document.createElement('p')
-    // price.innerHTML = "40e"
-    generatePrice(price)
-    const recupBlocDescription = document.querySelector('.cart__item__content__description')
-    recupBlocDescription.append(productName, color, price)
+    priceElement
+    blocDescription.append(productName, color, priceElement)
 }
 
-function createCartContentSettings(cartContentSettings) {
-    const recupArticle = document.querySelector('.cart__item')
-    const cartItemSettings = document.createElement('div')
+function createCartContentSettings() {
     cartItemSettings.classList = "cart__item__content__settings"
-    recupArticle.appendChild(cartItemSettings)
+    articleElement.appendChild(cartItemSettings)
 }
-
+// Création d'une fonction qui ajoute plusieurs éléments HTML dans un bloc lié "settings"
 function createCartContentSettingsQuantity(cartContentSettingsQuantity) {
-    const recupCartContentSettings = document.querySelector('.cart__item__content__settings')
     const contentSettingsQuantity = document.createElement('div')
     contentSettingsQuantity.classList = "cart__item__content_settings__quantity"
     const quantity = document.createElement('p')
@@ -133,18 +126,17 @@ function createCartContentSettingsQuantity(cartContentSettingsQuantity) {
     input.setAttribute("value", `${cartContentSettingsQuantity.inputQuantity}`)
     input.classList = "itemQuantity"
     contentSettingsQuantity.append(quantity, input)
-    recupCartContentSettings.appendChild(contentSettingsQuantity)
+    cartItemSettings.appendChild(contentSettingsQuantity)
 }
-
-function createCartContentSettingsDelete(cartContentSettingsDelete) {
-    const recupcartItemSettings = document.querySelector('.cart__item__content__settings')
+// Création d'une fonction qui ajoute plusieurs éléments HTML dans un bloc lié "settings"
+function createCartContentSettingsDelete() {
     const contentSettingsDelete = document.createElement('div')
     contentSettingsDelete.classList = "cart__item__content__settings__delete"
     const deleteElement = document.createElement('p')
     deleteElement.classList = "deleteItem"
     deleteElement.innerText = "Supprimer"
     contentSettingsDelete.appendChild(deleteElement)
-    recupcartItemSettings.appendChild(contentSettingsDelete)    
+    cartItemSettings.appendChild(contentSettingsDelete)    
 }
 
 
