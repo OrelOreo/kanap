@@ -26,12 +26,12 @@ async function generateProducts(products) {
         }
     }
 }
-generateProducts([JSON.parse(storage.Products)])
+generateProducts([JSON.parse(storage.product)])
 let panier = []
 
 const sectionCartItems = document.querySelector('#cart__items')
 // ⚠️⚠️⚠️ Besoin d'un refactor ⬇️
-
+// Boucle à travers le localStorage pour récupérer les informations des produits
 for (let i = 0; i <= storage.length - 1; i++) {
     const product = JSON.parse(localStorage.getItem(localStorage.key(i)))
     const article = product
@@ -56,50 +56,49 @@ for (let i = 0; i <= storage.length - 1; i++) {
    
 }
 
-
+// Création d'un élément "article" en lui ajoutant les attributs data-color et data-id
 function createArticle(article) {
     articleElement.classList = "cart__item"
     articleElement.setAttribute("data-id", `${article.id}`)
     articleElement.setAttribute("data-color", `${article.selectColor}`)
     sectionCartItems.appendChild(articleElement)
 }
-
+// Création d'un bloc qui contiendra l'image du produit
 function createCartItemImage() {
     cartImage.classList = "cart__item__img"
     articleElement.appendChild(cartImage)
 }
-
+// Création de l'image du produit avec la source et son text alternatif
 function createImageProduct(imageProduct, imageProductAltTxt) {
     productImage.src = imageProduct
     productImage.alt = imageProductAltTxt
 }
-
+// Ajout de l'image dans le bloc parent
 function createImageElement() {
     productImage
     cartImage.appendChild(productImage)
 }
-
+// Ajout du bloc "content" dans la balise article
 function createCartItemContent() {
     articleElement
-    
     cartContent.classList = "cart__item__content"
     articleElement.appendChild(cartContent)
 }
-
+// Création d'un bloc description
 function createContentDescription() {
     cartContent
     blocDescription.classList = "cart__item__content__description"
     cartContent.appendChild(blocDescription)
 }
-
+// Création du prix du produit dans le localStorage via l'API
 function createPriceProduct(priceProduct) {
     priceElement.innerText = `${priceProduct} €`
 }
-
+// Création du nom du produit dans le localStorage via l'API
 function createNameProduct(nameProduct) {
     productName.innerText = nameProduct
 }
-
+// Création d'une description d'un produit
 function createDescription(description) {
     productName
     const color = document.createElement('p')
@@ -107,7 +106,7 @@ function createDescription(description) {
     priceElement
     blocDescription.append(productName, color, priceElement)
 }
-
+// Création d'un bloc qui contiendra des settings
 function createCartContentSettings() {
     cartItemSettings.classList = "cart__item__content__settings"
     articleElement.appendChild(cartItemSettings)

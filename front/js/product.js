@@ -53,7 +53,6 @@ function genererColorsProduct(colors) {
 
 const addToCartButton = document.querySelector('#addToCart')
 
-
 addToCartButton.addEventListener('click',  function (event) {
     const selectColor = document.querySelector('#colors').value
     const inputQuantity = document.querySelector('#quantity').value
@@ -73,6 +72,6 @@ function conditionnalStorage(selectColor, inputQuantity, storage) {
         alert("Veuillez choisir une couleur et séléctionner le nombre d'articles")
     } 
     else {
-        localStorage.setItem('Products', JSON.stringify(storage))
+        localStorage.setItem("product", JSON.stringify(storage))
     }
 }    
