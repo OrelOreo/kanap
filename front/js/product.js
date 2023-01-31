@@ -72,6 +72,9 @@ function conditionnalStorage(selectColor, inputQuantity, storage) {
         alert("Veuillez choisir une couleur et séléctionner le nombre d'articles")
     } 
     else {
-        localStorage.setItem("product", JSON.stringify(storage))
+        let products = localStorage.getItem('products') ||  '[]'
+        products = JSON.parse(products)
+        products.push(storage)
+        localStorage.setItem('products', JSON.stringify(products))
     }
 }    
