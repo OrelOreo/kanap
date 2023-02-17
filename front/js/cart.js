@@ -73,47 +73,75 @@ async function showCart() {
         localStorage.setItem('products', JSON.stringify(products))
     })
 })
+// Ajouter un écouteur d'événement input sur tous les éléments .itemQuantity
+    const itemQuantityInputs = document.querySelectorAll('.itemQuantity')
+    itemQuantityInputs.forEach(input => {
+    input.addEventListener('input', (event) => {
+        const productId = event.target.dataset.id
+        const productColor = event.target.dataset.color
+        const newQuantity = parseInt(event.target.value)
+
+
+        // Mettre à jour la quantité et le prix total du produit dans le panier
+        const products = JSON.parse(localStorage.getItem('products'))
+        const product = products.find(p => p.id === productId && p.selectColor === productColor)
+        const oldQuantity = product.inputQuantity
+        const productPrice = product.price
+        product.inputQuantity = newQuantity
+        const quantityDifference = newQuantity - oldQuantity
+        totalArticlesQuantity += quantityDifference
+        totalArticlesPrice += quantityDifference * productPrice
+
+        // Enregistrer les modifications dans localStorage
+        localStorage.setItem('products', JSON.stringify(products))
+
+        // Mettre à jour le texte des éléments totalQuantity et totalPriceElement
+        totalQuantity.innerText = totalArticlesQuantity
+        totalPriceElement.innerText = totalArticlesPrice
+        console.log(typeof totalArticlesPrice)
+    })
+})
+
+
 }
 
 
 showCart()
 
 
-
-// const deleteButtons = Array.from(document.querySelectorAll('.deleteItem'))
-// console.log(deleteButtons)
-
-
-
-
-
-
 // FORM REGEX
+
+const btnCommande = document.querySelector('#order')
 
 const validationForm = {
     firstName: {
       inputElementForm: document.getElementById("firstName"),
       // cette expression régulière permet de vérifier que la chaîne de caractères ne contient que des lettres, sans espaces ni autres caractères, et que la chaîne commence et se termine par une lettre.
       regex: /^[a-zA-ZÀ-ÖØ-öø-ÿ]+$/,
+      errorMsg: "Prénom invalide",
     },
     lastName: {
       inputElementForm: document.getElementById("lastName"),
       // cette expression régulière permet de vérifier que la chaîne de caractères ne contient que des lettres, sans espaces ni autres caractères, et que la chaîne commence et se termine par une lettre.
       regex: /^[a-zA-ZÀ-ÖØ-öø-ÿ]+$/,
+      errorMsg: "nom invalide",
     },
     address: {
       inputElementForm: document.getElementById("address"),
       // cette expression régulière permet de vérifier que la chaîne de caractères commence par un nombre entier compris entre 1 et 99999, suivi d'une séquence de caractères qui peut inclure des lettres, des chiffres, des espaces, des virgules, des apostrophes et des tirets. La chaîne peut également inclure jusqu'à trois séquences supplémentaires de ce type, mais ces séquences sont optionnelles.
       regex: /^\d{1,5} [A-Za-z0-9\s,'-]{1,30}(?: [A-Za-z\s,'-]+){0,3}$/,
+      errorMsg: "adresse invalide",
     },
     city: {
       inputElementForm: document.getElementById("city"),
-      // cette expression régulière permet de vérifier que la chaîne de caractères est composée d'un ou plusieurs mots, chaque mot étant composé d'une première lettre majuscule suivie d'une ou plusieurs minuscules. Les mots peuvent être séparés par un espace ou un tiret.
-      regex: /^[A-Z][a-z]+([\s-][A-Z][a-z]+)*$/,
+      // cette expression régulière permet de vérifier que la chaîne de caractères ne contient que des lettres, sans espaces ni autres caractères, et que la chaîne commence et se termine par une lettre.
+      regex: /^[a-zA-ZÀ-ÖØ-öø-ÿ]+$/,
+      errorMsg: "ville invalide",
     },
     email: {
       inputElementForm: document.getElementById("email"),
       // cette expression régulière permet de vérifier que la chaîne de caractères est une adresse e-mail valide, qui commence par un nom d'utilisateur qui peut inclure des lettres, des chiffres, des points, des soulignés, des plus et des moins, suivi du caractère @ et du nom de domaine qui peut inclure des lettres, des chiffres et des points.
       regex: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+      errorMsg: "email invalide",
     },
   };

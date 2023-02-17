@@ -6,11 +6,13 @@ const urlParams = new URLSearchParams(paramsString)
 // La méthode get() de URLSearchParams retourne la première valeur associé au param donné
 const idProduct = urlParams.get('id')
 
+const inLocalStorage = JSON.parse(localStorage.getItem('products'))
 
 fetch(`http://localhost:3000/api/products/${idProduct}`)
     .then(response => response.json())
     .then((data) => genererProduct(data))
 
+// Génération du produit avec ses informations
 function genererProduct(product) {
     const colors = product
     const description = document.querySelector('#description')
@@ -21,7 +23,7 @@ function genererProduct(product) {
     genererNameAndPriceProduct(name, price)
     genererColorsProduct(colors)
 }
-
+// Génération de l'image et de son text alternatif
 function genererImageProduct(imageUrl, altTxt) {
     const imageElement = document.querySelector('.item__img')
     const imageProduct = document.createElement('img')
@@ -29,14 +31,14 @@ function genererImageProduct(imageUrl, altTxt) {
     imageProduct.alt = altTxt
     imageElement.appendChild(imageProduct)
 }
-
+// Génération du nom et du prix du produit
 function genererNameAndPriceProduct(name, price) {
     const titleElement = document.querySelector('#title')
     titleElement.innerHTML = name
     const priceElement = document.querySelector('#price')
     priceElement.innerHTML = price
 }
-
+// Génération des différentes couleurs dispo du produit
 function genererColorsProduct(colors) {
     const selectElements = document.querySelector('#colors')
     // Pour chaque élém du tableau colors creer balise option en attribuant les élém venant du tableau
@@ -53,6 +55,7 @@ function genererColorsProduct(colors) {
 
 const addToCartButton = document.querySelector('#addToCart')
 
+// Bouton qui permet de récupérer les valeurs des couleurs et de la quantité et également d'ajouter au panier(localStorage)
 addToCartButton.addEventListener('click',  function (event) {
     const selectColor = document.querySelector('#colors').value
     const inputQuantity = document.querySelector('#quantity').value
@@ -67,14 +70,20 @@ function saveStorage(selectColor, inputQuantity) {
     }
     conditionnalStorage(selectColor, inputQuantity, storage)
 }
+
+
 function conditionnalStorage(selectColor, inputQuantity, storage) {
-    if (selectColor === "" || inputQuantity == 0) {
-        alert("Veuillez choisir une couleur et séléctionner le nombre d'articles")
-    } 
-    else {
-        let products = localStorage.getItem('products') ||  '[]'
-        products = JSON.parse(products)
+    let products = localStorage.getItem('products') || '[]'
+    products = JSON.parse(products)
+    let productIndex = products.findIndex((p) => p.id === storage.id && p.selectColor === storage.selectColor)
+
+    if (productIndex !== -1) {
+        products[productIndex].inputQuantity += storage.inputQuantity
+    } else if (selectColor === "" || inputQuantity === 0) {
+        alert("Veuillez choisir une couleur eet séléctionner le nombre d'articles")
+    } else {
         products.push(storage)
-        localStorage.setItem('products', JSON.stringify(products))
     }
-}    
+    localStorage.setItem('products', JSON.stringify(products))
+
+}
