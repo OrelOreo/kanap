@@ -4,6 +4,8 @@ const totalQuantity = document.querySelector('#totalQuantity')
 let totalArticlesPrice = 0
 let totalArticlesQuantity = 0
 
+// On récupère chaque produit depuis l'API selon leurs ID si le produit est dans le localStorage
+// (pour récupérer ses informations)
 async function getProductById(artId) {
     return fetch("http://localhost:3000/api/products")
         .then(function (res) {
@@ -24,6 +26,7 @@ async function getProductById(artId) {
 
 const products = JSON.parse(localStorage.getItem('products'))
 
+// Pour chaque produit dans le localStorage, on affiche les informations de chaque produit
 async function showCart() {
     for (let i = 0; i < products.length; i++) {
         let {price, name, imageUrl, altTxt} = await getProductById(products[i].id)
@@ -81,7 +84,6 @@ async function showCart() {
         const productColor = event.target.dataset.color
         const newQuantity = parseInt(event.target.value)
 
-
         // Mettre à jour la quantité et le prix total du produit dans le panier
         const products = JSON.parse(localStorage.getItem('products'))
         const product = products.find(p => p.id === productId && p.selectColor === productColor)
@@ -91,18 +93,15 @@ async function showCart() {
         const quantityDifference = newQuantity - oldQuantity
         totalArticlesQuantity += quantityDifference
         totalArticlesPrice += quantityDifference * productPrice
-
+        console.log(productPrice)
         // Enregistrer les modifications dans localStorage
         localStorage.setItem('products', JSON.stringify(products))
 
         // Mettre à jour le texte des éléments totalQuantity et totalPriceElement
         totalQuantity.innerText = totalArticlesQuantity
         totalPriceElement.innerText = totalArticlesPrice
-        console.log(typeof totalArticlesPrice)
     })
-})
-
-
+ })
 }
 
 
@@ -111,37 +110,86 @@ showCart()
 
 // FORM REGEX
 
-const btnCommande = document.querySelector('#order')
-
 const validationForm = {
     firstName: {
       inputElementForm: document.getElementById("firstName"),
+      errorElement : document.getElementById('firstNameErrorMsg'),
       // cette expression régulière permet de vérifier que la chaîne de caractères ne contient que des lettres, sans espaces ni autres caractères, et que la chaîne commence et se termine par une lettre.
       regex: /^[a-zA-ZÀ-ÖØ-öø-ÿ]+$/,
       errorMsg: "Prénom invalide",
     },
     lastName: {
       inputElementForm: document.getElementById("lastName"),
+      errorElement : document.getElementById('lastNameErrorMsg'),
       // cette expression régulière permet de vérifier que la chaîne de caractères ne contient que des lettres, sans espaces ni autres caractères, et que la chaîne commence et se termine par une lettre.
       regex: /^[a-zA-ZÀ-ÖØ-öø-ÿ]+$/,
-      errorMsg: "nom invalide",
+      errorMsg: "Nom invalide",
     },
     address: {
       inputElementForm: document.getElementById("address"),
+      errorElement : document.getElementById('addressErrorMsg'),
       // cette expression régulière permet de vérifier que la chaîne de caractères commence par un nombre entier compris entre 1 et 99999, suivi d'une séquence de caractères qui peut inclure des lettres, des chiffres, des espaces, des virgules, des apostrophes et des tirets. La chaîne peut également inclure jusqu'à trois séquences supplémentaires de ce type, mais ces séquences sont optionnelles.
       regex: /^\d{1,5} [A-Za-z0-9\s,'-]{1,30}(?: [A-Za-z\s,'-]+){0,3}$/,
-      errorMsg: "adresse invalide",
+      errorMsg: "Adresse invalide",
     },
     city: {
       inputElementForm: document.getElementById("city"),
+      errorElement : document.getElementById('cityErrorMsg'),
       // cette expression régulière permet de vérifier que la chaîne de caractères ne contient que des lettres, sans espaces ni autres caractères, et que la chaîne commence et se termine par une lettre.
       regex: /^[a-zA-ZÀ-ÖØ-öø-ÿ]+$/,
-      errorMsg: "ville invalide",
+      errorMsg: "Ville invalide",
     },
     email: {
       inputElementForm: document.getElementById("email"),
+      errorElement : document.getElementById('emailErrorMsg'),
       // cette expression régulière permet de vérifier que la chaîne de caractères est une adresse e-mail valide, qui commence par un nom d'utilisateur qui peut inclure des lettres, des chiffres, des points, des soulignés, des plus et des moins, suivi du caractère @ et du nom de domaine qui peut inclure des lettres, des chiffres et des points.
       regex: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-      errorMsg: "email invalide",
+      errorMsg: "Email invalide",
     },
   };
+
+  // Submit Form
+
+  const inputFirstName = document.querySelector('#firstName')
+  inputFirstName.addEventListener('change', () => checkValidInput(validationForm.firstName))
+
+  const inputLastName = document.querySelector('#lastName')
+  inputLastName.addEventListener('change', () => checkValidInput(validationForm.lastName))
+
+  const inputAdress = document.querySelector('#address')
+  inputAdress.addEventListener('change', () => checkValidInput(validationForm.address))
+
+  const inputCity = document.querySelector('#city')
+  inputCity.addEventListener('change', () =>  checkValidInput(validationForm.city))
+
+  const inputEmail = document.querySelector('#email')
+  inputEmail.addEventListener('change', () => checkValidInput(validationForm.email))
+
+
+  // Vérification des valeurs des inputs
+  // Si les valeurs des inputs ne correspondent pas au regex alors retourne un message d'erreur
+  function checkValidInput(input) {
+    const element = input.inputElementForm
+    const regex = input.regex
+    const errorElement = input.errorElement
+    const errorMsg = input.errorMsg
+    const isValid = regex.test(element.value)
+    if (!isValid) {
+        errorElement.innerText = errorMsg
+    } else {
+        errorElement.innerText = ""
+    }
+    return isValid
+  }
+
+  // Formulaire de confirmation qui enverra les données au serveur avec la route "POST"
+
+  const sendForm = async (contact, products) => {
+    const response = await fetch ("http://localhost:3000/api/products/order", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(contact, products)
+    })
+  }
