@@ -60,6 +60,7 @@ async function showCart() {
         totalQuantity.innerText = totalArticlesQuantity
         totalPriceElement.innerText = totalArticlesPrice
     }
+
     // Suppression des articles dans le DOM et également du localStorage
     const deleteButtons = document.querySelectorAll('.deleteItem')
     deleteButtons.forEach(deleteButton => {
@@ -93,7 +94,9 @@ async function showCart() {
         const quantityDifference = newQuantity - oldQuantity
         totalArticlesQuantity += quantityDifference
         totalArticlesPrice += quantityDifference * productPrice
-        console.log(productPrice)
+        console.log(price)
+        console.log(quantityDifference)
+        console.log(totalArticlesPrice)
         // Enregistrer les modifications dans localStorage
         localStorage.setItem('products', JSON.stringify(products))
 
@@ -136,7 +139,7 @@ const validationForm = {
       inputElementForm: document.getElementById("city"),
       errorElement : document.getElementById('cityErrorMsg'),
       // cette expression régulière permet de vérifier que la chaîne de caractères ne contient que des lettres, sans espaces ni autres caractères, et que la chaîne commence et se termine par une lettre.
-      regex: /^[a-zA-ZÀ-ÖØ-öø-ÿ]+$/,
+      regex: /^[a-zA-ZÀ-ÖØ-öø-ÿ]/,
       errorMsg: "Ville invalide",
     },
     email: {
@@ -192,4 +195,47 @@ const validationForm = {
         },
         body: JSON.stringify(contact, products)
     })
+    const dataResponse = await response.json()
+    return dataResponse
+    
   }
+
+  document.querySelector('.cart__order__form').addEventListener('submit', (event) => {
+    event.preventDefault()
+
+    let contact = {
+        firstName: inputFirstName.value,
+        lastName: inputLastName.value,
+        address: inputAdress.value,
+        city: inputCity.value,
+        email: inputEmail.value
+    }
+    checkValidInput(validationForm.firstName)
+    checkValidInput(validationForm.lastName)
+    checkValidInput(validationForm.address)
+    checkValidInput(validationForm.city)
+    checkValidInput(validationForm.email)
+
+    // si le panier est vide alors une alerte prévient l'utilisateur que c'est impossible de passer la commande
+    if (products === null || products.length == 0) {
+        alert('Votre panier est vide, impossible de passer la commande')
+    } else if (
+        checkValidInput(validationForm.firstName) === false ||
+        checkValidInput(validationForm.lastName) === false ||
+        checkValidInput(validationForm.address) === false ||
+        checkValidInput(validationForm.city) === false ||
+        checkValidInput(validationForm.email) === false
+    ) {
+        return
+    }
+
+    console.log("products",products)
+
+    sendForm({ contact, products: products.map((product) => product.id)})
+        .then((data) => {
+            localStorage.removeItem('products')
+            window.location.href = "confirmation.html?id=" + data.orderId
+        })
+   
+
+  })
