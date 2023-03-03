@@ -95,14 +95,7 @@ async function showCart() {
         product.inputQuantity = newQuantity
         const quantityDifference = newQuantity - oldQuantity
         totalArticlesQuantity += quantityDifference
-        console.log(totalArticlesPrice)
         totalArticlesPrice += quantityDifference * productPrice
-        console.log("old quantity", typeof oldQuantity)
-        console.log("prix", productPrice)
-        console.log("nouvelle quantity",typeof newQuantity)
-        console.log("quant diff", quantityDifference)
-        console.log("totalArticlesQuantity",typeof totalArticlesQuantity)
-        console.log("total price", totalArticlesPrice)
         // Enregistrer les modifications dans localStorage
         localStorage.setItem('products', JSON.stringify(products))
 
@@ -234,9 +227,6 @@ const validationForm = {
     ) {
         return
     }
-
-    console.log("products",products)
-
     sendForm({ contact, products: products.map((product) => product.id)})
         .then((data) => {
             localStorage.removeItem('products')
