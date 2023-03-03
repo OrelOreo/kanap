@@ -27,11 +27,13 @@ async function getProductById(artId) {
 const products = JSON.parse(localStorage.getItem('products'))
 
 // Pour chaque produit dans le localStorage, on affiche les informations de chaque produit
+let priceElement
 async function showCart() {
     for (let i = 0; i < products.length; i++) {
-        let {price, name, imageUrl, altTxt} = await getProductById(products[i].id)
+        priceElement = await getProductById(products[i].id)
+        let {name, imageUrl, altTxt} = await getProductById(products[i].id)
         totalArticlesQuantity += parseInt(products[i].inputQuantity)
-        totalArticlesPrice += parseInt(products[i].inputQuantity * price)
+        totalArticlesPrice += parseInt(products[i].inputQuantity * priceElement.price)
 
         let article = `
                         <article class="cart__item" data-id="${products[i].id}" data-color="${products[i].selectColor}">
@@ -42,7 +44,7 @@ async function showCart() {
                                 <div class="cart__item__content__description">
                                     <h2>${name}</h2>
                                     <p>${products[i].selectColor}</p>
-                                    <p>${price} €</p>
+                                    <p>${priceElement.price} €</p>
                                 </div>
                                 <div class="cart__item__content__settings">
                                     <div class="cart__item__content__settings__quantity">
@@ -89,14 +91,18 @@ async function showCart() {
         const products = JSON.parse(localStorage.getItem('products'))
         const product = products.find(p => p.id === productId && p.selectColor === productColor)
         const oldQuantity = product.inputQuantity
-        const productPrice = product.price
+        const productPrice = priceElement.price
         product.inputQuantity = newQuantity
         const quantityDifference = newQuantity - oldQuantity
         totalArticlesQuantity += quantityDifference
-        totalArticlesPrice += quantityDifference * productPrice
-        console.log(price)
-        console.log(quantityDifference)
         console.log(totalArticlesPrice)
+        totalArticlesPrice += quantityDifference * productPrice
+        console.log("old quantity", typeof oldQuantity)
+        console.log("prix", productPrice)
+        console.log("nouvelle quantity",typeof newQuantity)
+        console.log("quant diff", quantityDifference)
+        console.log("totalArticlesQuantity",typeof totalArticlesQuantity)
+        console.log("total price", totalArticlesPrice)
         // Enregistrer les modifications dans localStorage
         localStorage.setItem('products', JSON.stringify(products))
 
@@ -146,7 +152,7 @@ const validationForm = {
       inputElementForm: document.getElementById("email"),
       errorElement : document.getElementById('emailErrorMsg'),
       // cette expression régulière permet de vérifier que la chaîne de caractères est une adresse e-mail valide, qui commence par un nom d'utilisateur qui peut inclure des lettres, des chiffres, des points, des soulignés, des plus et des moins, suivi du caractère @ et du nom de domaine qui peut inclure des lettres, des chiffres et des points.
-      regex: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+      regex: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]/,
       errorMsg: "Email invalide",
     },
   };

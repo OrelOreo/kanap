@@ -1,12 +1,12 @@
 // La propriété search de l'interface "location" est un query string
 // C'est une string contenant "?" suivi par les params de l'URL
 const paramsString = window.location.search
+
 // L'intérface URLSearchParams définit des méthodes utilitaires pour travailler avec la chaine de requete (get)
 const urlParams = new URLSearchParams(paramsString)
+
 // La méthode get() de URLSearchParams retourne la première valeur associé au param donné
 const idProduct = urlParams.get('id')
-
-const inLocalStorage = JSON.parse(localStorage.getItem('products'))
 
 fetch(`http://localhost:3000/api/products/${idProduct}`)
     .then(response => response.json())
@@ -17,7 +17,7 @@ function genererProduct(product) {
     const colors = product
     const description = document.querySelector('#description')
     description.innerText = product.description
-    const {name,price} = product
+    const {name, price} = product
     const {imageUrl, altTxt} = product
     genererImageProduct(imageUrl, altTxt)
     genererNameAndPriceProduct(name, price)
